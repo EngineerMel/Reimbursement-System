@@ -17,8 +17,11 @@
   },
   "homepage": "https://github.com/EngineerMel/Reimbursement-System#readme",
   "dependencies": {
+    "@hapi/joi": "^17.1.0",
     "@types/node": "^13.7.4",
+    "@types/nodemon": "^1.19.0",
     "express": "^4.17.1",
+    "joi": "^14.3.1",
     "underscore": "^1.9.2"
   }
 }
