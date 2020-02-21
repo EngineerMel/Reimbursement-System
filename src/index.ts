@@ -1,4 +1,5 @@
 //load the express module
+const Joi = require("joi"); //used to validate input
 const express = require("express");
 const app = express();
 
@@ -6,9 +7,7 @@ app.use(express.json());
 
 const users = [
   { id: 1, username: "Melly", password: "test1" },
-  { id: 2, username: "Melly", password: "test2" },
-  { id: 3, username: "Melly", password: "test3" },
-  { id: 4, username: "Melly", password: "test4" }
+  { id: 2, username: "Melly", password: "test2" }
 ];
 
 //testing endpoint
@@ -23,6 +22,24 @@ app.get("/api/users", (req, res) => {
 
 //creates a user
 app.post("/api/users", (req, res) => {
+  //the schema will help tp validate the fields, types, and # of characters
+  const schema = {
+    username: Joi.string()
+      .min(3)
+      .required(),
+    password: Joi.string()
+      .min(5)
+      .required()
+  };
+
+  const result = Joi.validate(req.body, schema);
+
+  if (result.error) {
+    //400 Bad Request
+    res.status(400).send(result.error.details[0].message);
+    return;
+  }
+
   const user = {
     id: users.length + 1,
     username: req.body.username,
