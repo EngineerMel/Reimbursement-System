@@ -31,9 +31,7 @@ app.post("/api/users", (req, res) => {
       .min(5)
       .required()
   };
-
   const result = Joi.validate(req.body, schema);
-
   if (result.error) {
     //400 Bad Request
     res.status(400).send(result.error.details[0].message);
