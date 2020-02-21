@@ -10,4 +10,5 @@ app.get("/api/users", (req, res) => {
   res.send([1, 2, 3]);
 });
 
-app.listen(2020, () => console.log("Listening on port 2020"));
+const port = process.env.PORT || 2020;
+app.listen(port, () => console.log(`Listening on ${port}`));
