@@ -31,6 +31,7 @@ app.post("/api/users", (req, res) => {
       .min(5)
       .required()
   };
+
   const result = Joi.validate(req.body, schema);
   if (result.error) {
     //400 Bad Request
@@ -45,6 +46,28 @@ app.post("/api/users", (req, res) => {
   };
   users.push(user);
   res.send(user);
+});
+
+app.put("api/users/:id", (req, res) => {
+  const user = users.find(u => u.id === parseInt(req.params.id));
+  if (!user) res.status(404).send("The user with this given id was not found");
+
+  const schema = {
+    username: Joi.string()
+      .min(3)
+      .required()
+  };
+
+  //otherwise Validate and if invalid return 400 - bad request
+  const result = Joi.validate(req.body, schema);
+  if (result.error) {
+    res.status(400).send(result.error.details[0].message);
+    return;
+  }
+  //update this later to match database
+  user.username = req.body.username;
+  res.send(user);
+  //then update course and return the updated course
 });
 
 //find a user by id
