@@ -22,22 +22,8 @@ app.get("/api/users", (req, res) => {
 
 //creates a user
 app.post("/api/users", (req, res) => {
-  //the schema will help tp validate the fields, types, and # of characters
-  const schema = {
-    username: Joi.string()
-      .min(3)
-      .required(),
-    password: Joi.string()
-      .min(5)
-      .required()
-  };
-
-  const result = Joi.validate(req.body, schema);
-  if (result.error) {
-    //400 Bad Request
-    res.status(400).send(result.error.details[0].message);
-    return;
-  }
+  const { error } = validateUser(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
 
   const user = {
     id: users.length + 1,
@@ -48,32 +34,38 @@ app.post("/api/users", (req, res) => {
   res.send(user);
 });
 
-app.put("api/users/:id", (req, res) => {
+//updates a user
+app.put("/api/users/:id", (req, res) => {
   const user = users.find(u => u.id === parseInt(req.params.id));
-  if (!user) res.status(404).send("The user with this given id was not found");
+  if (!user)
+    return res.status(404).send("The user with this given id was not found");
 
+  const { error } = validateUser(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
+
+  user.username = req.body.username;
+  user.password = req.body.password;
+  res.send(user);
+});
+
+function validateUser(user) {
+  //add to schema to allow updates
   const schema = {
     username: Joi.string()
       .min(3)
+      .required(),
+    password: Joi.string()
+      .min(5)
       .required()
   };
-
-  //otherwise Validate and if invalid return 400 - bad request
-  const result = Joi.validate(req.body, schema);
-  if (result.error) {
-    res.status(400).send(result.error.details[0].message);
-    return;
-  }
-  //update this later to match database
-  user.username = req.body.username;
-  res.send(user);
-  //then update course and return the updated course
-});
+  return Joi.validate(user, schema);
+}
 
 //find a user by id
 app.get("/api/users/:id", (req, res) => {
   const user = users.find(u => u.id === parseInt(req.params.id));
-  if (!user) res.status(404).send("The user with this given id was not found");
+  if (!user)
+    return res.status(404).send("The user with this given id was not found");
   res.send(user);
 });
 
