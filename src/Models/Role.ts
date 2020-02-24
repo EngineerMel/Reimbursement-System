@@ -1,3 +1,5 @@
+export const user = "User";
+
 export class Role {
   roleId: number;
   role: string;

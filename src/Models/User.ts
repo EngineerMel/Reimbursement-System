@@ -1,3 +1,5 @@
+import { Role } from "/Users/ramelhaines/Desktop/Revature/Projects/Project0/src/Models/Role";
+
 // a model is just an object for holding data, generally it will reflect data from our database
 export class User {
   username: string;
@@ -6,7 +8,7 @@ export class User {
   id: number; // a unique number for identification
   firstName: string;
   lastName: string;
-  role: string; // their user permissions
+  role: Role; // their user permissions
   // user - for you can use the service
   // admin - you can ban people or add/remove movies
   constructor(
@@ -16,7 +18,7 @@ export class User {
     id: number,
     firstName: string,
     lastName: string,
-    role: string
+    role: Role
   ) {
     this.username = username;
     this.password = password;

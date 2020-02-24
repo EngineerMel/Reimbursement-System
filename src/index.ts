@@ -1,4 +1,5 @@
-//load the express module
+import { Role } from "./Models/Role";
+
 const Joi = require("joi"); //used to validate input
 const express = require("express");
 const app = express();
@@ -6,8 +7,24 @@ const app = express();
 app.use(express.json());
 
 const users = [
-  { id: 1, username: "Melly", password: "test1" },
-  { id: 2, username: "Melly", password: "test2" }
+  {
+    id: 1,
+    username: "Melly",
+    password: "test1",
+    firstName: "testName",
+    lastName: "testLast",
+    email: "hello@me.com",
+    role: "financeManager"
+  },
+  {
+    id: 2,
+    username: "Melly",
+    password: "test2",
+    firstName: "ramel",
+    lastName: "haines",
+    email: "firstema@me.com",
+    role: "user"
+  }
 ];
 
 //testing endpoint
@@ -28,7 +45,11 @@ app.post("/api/users", (req, res) => {
   const user = {
     id: users.length + 1,
     username: req.body.username,
-    password: req.body.password
+    password: req.body.password,
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    email: req.body.email,
+    role: req.body.role
   };
   users.push(user);
   res.send(user);
@@ -45,6 +66,10 @@ app.put("/api/users/:id", (req, res) => {
 
   user.username = req.body.username;
   user.password = req.body.password;
+  user.firstName = req.body.firstName;
+  user.lastName = req.body.lastName;
+  user.email = req.body.email;
+  user.role = req.body.role;
   res.send(user);
 });
 
@@ -56,6 +81,12 @@ function validateUser(user) {
       .required(),
     password: Joi.string()
       .min(5)
+      .required(),
+    firstName: Joi.string().min(2),
+    lastName: Joi.string().min(2),
+    email: Joi.string().min(5),
+    role: Joi.string()
+      .min(3)
       .required()
   };
   return Joi.validate(user, schema);
