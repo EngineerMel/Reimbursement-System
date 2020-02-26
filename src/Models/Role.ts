@@ -1,10 +1,8 @@
-export const user = "User";
-
 export class Role {
-  roleId: number;
+  role_id: number;
   role: string;
-  constructor(roleId: number, role: string) {
-    this.roleId = roleId;
+  constructor(role_id: number, role: string) {
+    this.role_id = role_id;
     this.role = role;
   }
 }
