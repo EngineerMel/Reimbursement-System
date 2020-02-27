@@ -17,14 +17,16 @@ export async function daoFindUserByUsernameAndPassword(
 
     // a paramaterized query
     let results = await client.query(
-      'SELECT * FROM public.users U inner join public.roles R on U."role_id" = R.role_id  WHERE username = $1  and "password" = $2',
+      `SELECT * FROM public.users U inner join public."role" on public.users."role = public."role".role_id where
+      username = $1 and "password" = $2;`,
       [username, password]
     );
 
-    if (results.rowCount === 0) {
-      throw new Error("User Not Found");
+    if (results.rowCount !== 0) {
+      return userDTOToUserConverter(results.rows[0]);
+    } else {
+      throw new UserNotFoundError();
     }
-    return userDTOToUserConverter(results.rows[0]);
   } catch (e) {
     console.log(e);
     if (e.message === "User Not Found") {
@@ -58,49 +60,99 @@ export async function daoSaveOneUser(newUser: UserDTO): Promise<User> {
   let client: PoolClient;
   try {
     client = await connectionPool.connect();
-    let roleId = (
-      await client.query("SELECT * FROM public.roles WHERE role_name = $1", [
-        newUser.role_name
+    let role_id = (
+      await client.query("SELECT * FROM public.roles WHERE role_id = $1", [
+        newUser.role
       ])
     ).rows[0].role_id;
-    // send an insert that uses the id above and the user input
     let result = await client.query(
-      'INSERT INTO public.users (username, "password", email, first_name, last_name, "role") values ($1,$2,$3,$4,$5,$6) RETURNING user_id;',
+      'INSERT INTO public.users (username, "password", firstName, lastName, email, role_id) values ($1,$2,$3,$4,$5,$6) RETURNING user_id;',
       [
         newUser.username,
         newUser.password,
         newUser.email,
         newUser.first_name,
         newUser.last_name,
-        roleId
+        newUser.role
       ]
     );
     // put that newly genertaed user_id on the DTO
     newUser.user_id = result.rows[0].user_id;
     return userDTOToUserConverter(newUser); // convert and send back
-  } catch (e) {
+  } catch (error) {
     throw new InternalServerError();
   } finally {
     client && client.release();
   }
 }
 
-export async function daoFindUserById(id: number): Promise<User> {
+//FIND USER BY ID
+export async function daoFindUserById(user_id): Promise<User> {
   let client: PoolClient;
   try {
     client = await connectionPool.connect();
     let result = await client.query(
-      'SELECT * FROM public.users U inner join public.roles R on U."role" = R.role_id WHERE U.user_id = $1',
-      [id]
+      `SELECT * FROM public.users U inner join public.roles on public.users."role" = public.roles.role_id WHERE user_id = $1;`,
+      [user_id]
     );
-    if (result.rowCount === 0) {
-      throw new Error("User Not Found");
+    if (result.rowCount !== 0) {
+      return userDTOToUserConverter(result.rows[0]);
+    } else {
+      throw new UserNotFoundError();
     }
-    return userDTOToUserConverter(result.rows[0]);
   } catch (e) {
     if (e.message === "User Not Found") {
       throw new UserNotFoundError();
+    } else {
+      throw new InternalServerError();
     }
+  } finally {
+    client && client.release();
+  }
+}
+
+export async function daoUpdateUser(updatedUser: UserDTO): Promise<User> {
+  let client: PoolClient;
+  try {
+    client = await connectionPool.connect();
+    let user = await client.query(
+      `SELECT * FROM public.users WHERE user_id = $1;`,
+      [updatedUser.user_id]
+    );
+
+    updatedUser.username = updatedUser.username || user.rows[0].username;
+    updatedUser.password = updatedUser.password || user.rows[0].password;
+    updatedUser.first_name = updatedUser.first_name || user.rows[0].lastName;
+    updatedUser.last_name = updatedUser.last_name || user.rows[0].lastName;
+    updatedUser.email = updatedUser.email || user.rows[0].email;
+    updatedUser.role = updatedUser.role || user.rows[0].role;
+
+    await client.query(
+      `UPDATE public.users SET username = $1, "password" = $2, first_name = $3, last_name = $4,
+  email = $5, "role" = $6 WHERE user_id =$7;`,
+      [
+        updatedUser.username,
+        updatedUser.password,
+        updatedUser.first_name,
+        updatedUser.last_name,
+        updatedUser.email,
+        updatedUser.role,
+        updatedUser.user_id
+      ]
+    );
+
+    let result = await client.query(
+      `SELECT * FROM public.users inner join public.roles on public.users."role" = public.roles.role_id WHERE
+    user_id = $1,;`,
+      [updatedUser.user_id]
+    );
+    if (result.rowCount !== 0) {
+      return userDTOToUserConverter(result.rows[0]);
+    } else {
+      throw new UserNotFoundError();
+    }
+  } catch (e) {
+    console.log(e);
     throw new InternalServerError();
   } finally {
     client && client.release();

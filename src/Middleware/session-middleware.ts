@@ -1,7 +1,7 @@
 import * as session from "express-session";
 
 const sessionConfig = {
-  secret: "false",
+  secret: "hidden",
   cookie: { secure: false },
   resave: false,
   saveUninitialized: false
