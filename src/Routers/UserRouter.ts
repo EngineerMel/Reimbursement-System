@@ -59,6 +59,31 @@ userRouter.get("", authFactory(["Finance-Manager"]), async (req, res) => {
   }
 });
 
+// FIND A USER BY ID
+
+userRouter.get("/:id", authFactory(["Finance-Manager"]), async (req, res) => {
+  if (req.session.user) {
+    const { user_id } = req.body;
+    if (isNaN(user_id)) {
+      res.status(400).send("Invalid Id.");
+    } else {
+      try {
+        if (
+          req.session.user.role.role_id <= 2 ||
+          user_id === req.session.user.user_id
+        ) {
+          const user = await findUserById(user_id);
+          res.status(200).json(user);
+        }
+      } catch (e) {
+        res.status(e.status).send(e.message);
+      }
+    }
+  } else {
+    res.status(400).send("Please log in");
+  }
+});
+
 // generally in rest convention
 // a post request to the root of a resource will make one new of that resource
 userRouter.post("/:id", authFactory(["Finance-Manager"]), async (req, res) => {
@@ -97,20 +122,6 @@ userRouter.post("/:id", authFactory(["Finance-Manager"]), async (req, res) => {
   } else {
     res.status(400).send("Please include all user fields");
     // for setting a status and a body
-  }
-});
-
-userRouter.get("/:id", authFactory(["Finance-Manager"]), async (req, res) => {
-  const id = +req.params.id;
-  if (isNaN(id)) {
-    res.sendStatus(400);
-  } else {
-    try {
-      let user = await findUserById(id);
-      res.json(user);
-    } catch (e) {
-      res.status(e.status).send(e.message);
-    }
   }
 });
 
