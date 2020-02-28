@@ -42,11 +42,10 @@ userRouter.post("/login", async (req, res) => {
 
 //GET ALL USERS
 
-userRouter.get("", async (req, res) => {
+userRouter.get("", authFactory(["Finance-Manager"]), async (req, res) => {
   if (req.session.user) {
     try {
       if (req.session.user.role.role_id > 2) {
-        throw new TokenError();
       } else {
         const users = await findAllUsers();
         res.status(200).json(users);

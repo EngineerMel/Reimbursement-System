@@ -34,7 +34,7 @@ export const authFactory = (roles: string[]) => {
       // loop through all of the allowed roles
       for (let role of roles) {
         // see if user has a matching role
-        if (req.session.user.role === role) {
+        if (req.session.user.role.role === role) {
           allowed = true;
           next();
         }
