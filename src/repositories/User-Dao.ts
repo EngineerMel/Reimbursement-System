@@ -7,6 +7,7 @@ import { UserNotFoundError } from "../Errors/UserNotFoundError";
 import { UserDTO } from "../DTOs/UserDTO";
 import { userDTOToUserConverter } from "../Utils/user-dto-to-user-converter";
 
+//Login
 export async function daoFindUserByUsernameAndPassword(
   username: string,
   password: string
@@ -16,9 +17,10 @@ export async function daoFindUserByUsernameAndPassword(
     client = await connectionPool.connect();
 
     // a paramaterized query
+
     let results = await client.query(
-      `SELECT * FROM public.users U inner join public."role" on public.users."role = public."role".role_id where
-      username = $1 and "password" = $2;`,
+      `SELECT * FROM public.users U inner join public.roles R ON U."role" = R.role_id  
+WHERE username = $1  and "password" = $2;`,
       [username, password]
     );
 
@@ -66,7 +68,7 @@ export async function daoSaveOneUser(newUser: UserDTO): Promise<User> {
       ])
     ).rows[0].role_id;
     let result = await client.query(
-      'INSERT INTO public.users (username, "password", firstName, lastName, email, role_id) values ($1,$2,$3,$4,$5,$6) RETURNING user_id;',
+      'INSERT INTO public.users (username, "password", firstName, lastName, email, ) values ($1,$2,$3,$4,$5,$6) RETURNING user_id;',
       [
         newUser.username,
         newUser.password,
@@ -92,7 +94,7 @@ export async function daoFindUserById(user_id): Promise<User> {
   try {
     client = await connectionPool.connect();
     let result = await client.query(
-      `SELECT * FROM public.users U inner join public.roles on public.users."role" = public.roles.role_id WHERE user_id = $1;`,
+      `SELECT * FROM public.users u inner join public.roles on public.users."role" = public.roles.role_id WHERE user_id = $1;`,
       [user_id]
     );
     if (result.rowCount !== 0) {

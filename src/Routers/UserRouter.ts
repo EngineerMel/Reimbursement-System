@@ -1,11 +1,14 @@
 import * as express from "express";
-import { User } from "../Models/User";
+import { sessionMiddleware } from "../middleware/session-middleware";
+import { TokenError } from "../Errors/TokenError";
+
 import {
   authAdminMiddleware,
   authUserMiddleware,
   authFactory,
   authCheckId
 } from "../Middleware/auth.middleware";
+
 import {
   findAllUsers,
   saveOneUser,
@@ -18,6 +21,7 @@ import { UserDTO } from "../DTOs/UserDTO";
 import { Role } from "../Models/Role";
 
 export const userRouter = express.Router();
+userRouter.use(sessionMiddleware);
 
 //LOGIN USER
 userRouter.post("/login", async (req, res) => {
@@ -27,6 +31,7 @@ userRouter.post("/login", async (req, res) => {
   } else {
     try {
       let user = await findUserByUsernameAndPassword(username, password);
+
       req.session.user = user;
       res.status(200).json(user);
     } catch (error) {
@@ -35,14 +40,23 @@ userRouter.post("/login", async (req, res) => {
   }
 });
 
-//List all users
-userRouter.get("", [
-  authFactory(["Finance-Manager"]),
-  async (req, res) => {
-    let users: User[] = await findAllUsers();
-    res.json(users);
+userRouter.get("", authFactory(["Finance-Manager"]), async (req, res) => {
+  if (req.session.user) {
+    try {
+      if (req.session.user.role.role_id > 2) {
+        throw new TokenError();
+      } else {
+        const users = await findAllUsers();
+        res.status(200).json(users);
+      }
+    } catch (e) {
+      //end of try
+      res.status(e.status).send(e.message);
+    } //end of catch
+  } else {
+    res.status(400).send("Please Login To Continue.");
   }
-]);
+});
 
 // generally in rest convention
 // a post request to the root of a resource will make one new of that resource

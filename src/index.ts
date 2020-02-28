@@ -3,6 +3,7 @@ import * as bodyparser from "body-parser";
 import { userRouter } from "./Routers/UserRouter";
 
 const app = express();
+
 app.use("/", bodyparser.json());
 app.use("/users", userRouter);
 

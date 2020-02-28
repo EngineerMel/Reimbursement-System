@@ -21,6 +21,7 @@ export class User {
   ) {
     this.user_id = user_id;
     this.username = username;
+    this.password = password;
     this.email = email;
     this.firstName = firstName;
     this.lastName = lastName;

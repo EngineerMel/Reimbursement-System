@@ -4,7 +4,7 @@ export const authAdminMiddleware = (req, res, next) => {
   } else if (req.session.user.role === "Admin") {
     next();
   } else {
-    res.status(403).send("You are UnAuthorized for this endpoint");
+    res.status(403).send("You are Unauthorized for this endpoint");
   }
 };
 
@@ -12,12 +12,12 @@ export const authUserMiddleware = (req, res, next) => {
   if (!req.session.user) {
     res.status(401).send("Please Login");
   } else if (
-    req.session.user.role_id === 3 ||
+    req.session.user.role === "Finance-Manager" ||
     req.session.user.user_id === +req.params.id //url path
   ) {
     next();
   } else {
-    res.status(403).send("You are UnAuthorized for this endpoint");
+    res.status(403).send("You are Unathorized for this endpoint");
   }
 };
 
@@ -40,7 +40,7 @@ export const authFactory = (roles: string[]) => {
         }
       }
       if (!allowed) {
-        res.status(403).send("You are UnAuthorized for this endpoint");
+        res.status(403).send("You are Unauthorized for this endpoint");
       }
     }
   };
@@ -52,6 +52,6 @@ export const authCheckId = (req, res, next) => {
   } else if (req.session.user.id === +req.params.id) {
     next();
   } else {
-    res.status(403).send("You are UnAuthorized for this endpoint");
+    res.status(403).send("You are Unauthorized for this endpoint");
   }
 };
