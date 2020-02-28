@@ -21,7 +21,7 @@
   "dependencies": {
     "@hapi/joi": "^17.1.0",
     "@types/express-session": "^1.15.16",
-    "@types/node": "^13.7.4",
+    "@types/node": "^13.7.7",
     "@types/nodemon": "^1.19.0",
     "@types/pg": "^7.14.1",
     "config": "^3.2.6",
