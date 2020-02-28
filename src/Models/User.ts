@@ -3,7 +3,7 @@ import { Role } from "../Models/Role";
 export class User {
   user_id: number; // a unique number for identification
   username: string;
-  password: string;
+  // password: string;
   firstName: string;
   lastName: string;
   email: string; // their user permissions
@@ -13,7 +13,7 @@ export class User {
   constructor(
     user_id: number,
     username: string,
-    password: string,
+    // password: string,
     firstName: string,
     lastName: string,
     email: string,
@@ -21,7 +21,7 @@ export class User {
   ) {
     this.user_id = user_id;
     this.username = username;
-    this.password = password;
+    // this.password = password;
     this.email = email;
     this.firstName = firstName;
     this.lastName = lastName;

@@ -40,7 +40,9 @@ userRouter.post("/login", async (req, res) => {
   }
 });
 
-userRouter.get("", authFactory(["Finance-Manager"]), async (req, res) => {
+//GET ALL USERS
+
+userRouter.get("", async (req, res) => {
   if (req.session.user) {
     try {
       if (req.session.user.role.role_id > 2) {
@@ -54,7 +56,7 @@ userRouter.get("", authFactory(["Finance-Manager"]), async (req, res) => {
       res.status(e.status).send(e.message);
     } //end of catch
   } else {
-    res.status(400).send("Please Login To Continue.");
+    res.status(400).send("Please log in.");
   }
 });
 

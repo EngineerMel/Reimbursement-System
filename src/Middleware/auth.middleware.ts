@@ -39,6 +39,7 @@ export const authFactory = (roles: string[]) => {
           next();
         }
       }
+
       if (!allowed) {
         res.status(403).send("You are Unauthorized for this endpoint");
       }
