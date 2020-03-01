@@ -132,7 +132,7 @@ export async function daoUpdateUser(updatedUser: UserDTO): Promise<User> {
 
     await client.query(
       `UPDATE public.users SET username = $1, "password" = $2, firstName = $3, lastName = $4,
-  email = $5, "role" = $6 WHERE user_id =$7;`,
+  email = $5, "role" = $6, WHERE user_id =$7;`,
       [
         updatedUser.username,
         updatedUser.password,

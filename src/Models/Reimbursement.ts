@@ -1,13 +1,13 @@
 export class ReimbursementId {
   reimbursementId: number;
-  author: number;
+  author: number; //foreign key to user_id
   amount: number;
   dateSubmitted: number;
   dateResolved: number;
   description: string;
-  resolver: number;
-  status: number;
-  type: number;
+  resolver: number; //foreign key to user_id
+  status: number; //foreign key to reimb-status
+  type: number; //foreign key to reimb-type
 
   constructor(
     reimbursementId: number,
