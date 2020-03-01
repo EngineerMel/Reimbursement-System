@@ -6,8 +6,8 @@ export function userDTOToUserConverter(userDTOToUserConverter): User {
     userDTOToUserConverter.user_id,
     userDTOToUserConverter.username,
     // userDTOToUserConverter.password,
-    userDTOToUserConverter.first_name,
-    userDTOToUserConverter.last_name,
+    userDTOToUserConverter.firstName,
+    userDTOToUserConverter.lastName,
     userDTOToUserConverter.email,
     new Role(userDTOToUserConverter.role_id, userDTOToUserConverter.role)
   );

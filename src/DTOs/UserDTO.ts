@@ -4,8 +4,8 @@ export class UserDTO {
   user_id: number; //
   username: string;
   password: string;
-  first_name: string;
-  last_name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   role: Role; // their user permissions
   // user - for you can use the service
@@ -23,8 +23,8 @@ export class UserDTO {
     this.username = username;
     this.password = password;
     this.email = email;
-    this.first_name = firstName;
-    this.last_name = lastName;
+    this.firstName = firstName;
+    this.lastName = lastName;
     this.role = role;
   }
 }

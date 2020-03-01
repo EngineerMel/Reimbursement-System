@@ -31,6 +31,6 @@ export async function findUserById(user_id: number): Promise<User> {
   return await daoFindUserById(user_id);
 }
 //updates the fields of a given user
-export async function updateUser(users: UserDTO): Promise<User> {
-  return await daoUpdateUser(users);
+export async function updateUser(user: UserDTO): Promise<User> {
+  return await daoUpdateUser(user);
 }

@@ -84,75 +84,42 @@ userRouter.get("/:id", authFactory(["Finance-Manager"]), async (req, res) => {
   }
 });
 
-// generally in rest convention
-// a post request to the root of a resource will make one new of that resource
-userRouter.post("/:id", authFactory(["Finance-Manager"]), async (req, res) => {
-  let {
-    user_id,
-    username,
-    password,
-    firstName,
-    lastName,
-    email,
-    role
-  }: {
-    user_id: number;
-    username: string;
-    password: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    role: Role;
-  } = req.body; // this will be where the data the sent me is
-  // the downside is this is by default just a string of json, not a js object
-  if (
-    user_id &&
-    username &&
-    password &&
-    firstName &&
-    lastName &&
-    email &&
-    role
-  ) {
-    let newUser = await saveOneUser(
-      new UserDTO(user_id, username, password, firstName, lastName, email, role)
-    );
-    // this would be some function for adding a new user to a db
-    res.status(201).json(newUser);
+//UPDATE A USER
+
+userRouter.patch("/update", authFactory(["Admin"]), async (req, res) => {
+  if (req.session.user) {
+    try {
+      if (req.session.user.role.role_id === 1) {
+        const {
+          user_id,
+          username,
+          password,
+          firstName,
+          lastName,
+          email,
+          role
+        } = req.body;
+        if (findUserById(user_id)) {
+          let user = await updateUser(
+            new UserDTO(
+              user_id,
+              username,
+              password,
+              firstName,
+              lastName,
+              email,
+              role
+            )
+          );
+          res.status(200).json(user);
+        } else {
+          res.status(400).send("Invalid Credentials. Please enter valid Id.");
+        }
+      }
+    } catch (e) {
+      res.status(e.status).send(e.message);
+    }
   } else {
-    res.status(400).send("Please include all user fields");
-    // for setting a status and a body
+    res.status(400).send("Please log in");
   }
 });
-
-userRouter.patch("", [
-  authFactory(["Admin"]),
-  async (req, res) => {
-    let {
-      user_id,
-      username,
-      firstName,
-      lastName,
-      email,
-      role
-    }: {
-      user_id: number;
-      username: string;
-      firstName: string;
-      lastName: string;
-      email: string;
-      role: Role;
-    } = req.body;
-    if (user_id && (username || firstName || lastName || email || role)) {
-    }
-    try {
-      let user = await updateUser(req.body);
-      res.json(user);
-    } catch (e) {
-      console.log(e);
-      res.sendStatus(500);
-    } finally {
-      console.log("finally");
-    }
-  }
-]);

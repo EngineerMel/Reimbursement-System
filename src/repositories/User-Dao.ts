@@ -73,8 +73,8 @@ export async function daoSaveOneUser(newUser: UserDTO): Promise<User> {
         newUser.username,
         newUser.password,
         newUser.email,
-        newUser.first_name,
-        newUser.last_name,
+        newUser.firstName,
+        newUser.lastName,
         newUser.role
       ]
     );
@@ -125,19 +125,19 @@ export async function daoUpdateUser(updatedUser: UserDTO): Promise<User> {
 
     updatedUser.username = updatedUser.username || user.rows[0].username;
     updatedUser.password = updatedUser.password || user.rows[0].password;
-    updatedUser.first_name = updatedUser.first_name || user.rows[0].lastName;
-    updatedUser.last_name = updatedUser.last_name || user.rows[0].lastName;
+    updatedUser.firstName = updatedUser.firstName || user.rows[0].lastName;
+    updatedUser.lastName = updatedUser.lastName || user.rows[0].lastName;
     updatedUser.email = updatedUser.email || user.rows[0].email;
     updatedUser.role = updatedUser.role || user.rows[0].role;
 
     await client.query(
-      `UPDATE public.users SET username = $1, "password" = $2, first_name = $3, last_name = $4,
+      `UPDATE public.users SET username = $1, "password" = $2, firstName = $3, lastName = $4,
   email = $5, "role" = $6 WHERE user_id =$7;`,
       [
         updatedUser.username,
         updatedUser.password,
-        updatedUser.first_name,
-        updatedUser.last_name,
+        updatedUser.firstName,
+        updatedUser.lastName,
         updatedUser.email,
         updatedUser.role,
         updatedUser.user_id
@@ -146,7 +146,7 @@ export async function daoUpdateUser(updatedUser: UserDTO): Promise<User> {
 
     let result = await client.query(
       `SELECT * FROM public.users inner join public.roles on public.users."role" = public.roles.role_id WHERE
-    user_id = $1,;`,
+    user_id = $1;`,
       [updatedUser.user_id]
     );
     if (result.rowCount !== 0) {
