@@ -1,13 +1,13 @@
-export class Reimbursement {
+export class ReimbursementDTO {
   reimbursement_id: number;
-  author: number; //foreign key to user_id
+  author: number;
   amount: number;
   dateSubmitted: number;
   dateResolved: number;
   description: string;
-  resolver: number; //foreign key to user_id
-  status: number; //foreign key to reimb-status
-  type: number; //foreign key to reimb-type
+  resolver: number;
+  status: number;
+  type: number;
 
   constructor(
     reimbursement_id: number,
