@@ -41,7 +41,7 @@ WHERE username = $1  and "password" = $2;`,
   }
 }
 
-// this function gets anf formats all users
+// this function gets and formats all users
 export async function daoFindAllUsers(): Promise<User[]> {
   let client: PoolClient;
   try {

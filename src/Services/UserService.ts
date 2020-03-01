@@ -8,7 +8,6 @@ import {
 
 import { User } from "../Models/User";
 import { UserDTO } from "../dtos/UserDTO";
-import { userDTOToUserConverter } from "../Utils/user-dto-to-user-converter";
 
 //returns user object if credentials pass
 export async function findUserByUsernameAndPassword(

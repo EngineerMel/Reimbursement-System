@@ -1,24 +1,14 @@
 import * as express from "express";
+import { UserDTO } from "../DTOs/UserDTO";
 import { sessionMiddleware } from "../middleware/session-middleware";
-import { TokenError } from "../Errors/TokenError";
-
-import {
-  authAdminMiddleware,
-  authUserMiddleware,
-  authFactory,
-  authCheckId
-} from "../Middleware/auth.middleware";
+import { authFactory } from "../Middleware/auth.middleware";
 
 import {
   findAllUsers,
-  saveOneUser,
   findUserById,
   updateUser,
   findUserByUsernameAndPassword
 } from "../Services/UserService";
-
-import { UserDTO } from "../DTOs/UserDTO";
-import { Role } from "../Models/Role";
 
 export const userRouter = express.Router();
 userRouter.use(sessionMiddleware);
