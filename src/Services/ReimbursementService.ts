@@ -3,9 +3,9 @@ import { Reimbursement } from "../Models/Reimbursement";
 //add to more dao's
 import {
   daoSubmitReimbursement,
-  daoFindByReimbursementStatus,
   daoFindReimbursementByAuthor,
-  daoUpdateReimbursement
+  daoUpdateReimbursement,
+  daoFindReimbursementByStatus
 } from "../repositories/Reimbursement-Dao";
 
 export async function submitReimbursement(
@@ -17,10 +17,10 @@ export async function submitReimbursement(
 export async function findReimbursementByStatus(
   status: number
 ): Promise<Reimbursement[]> {
-  return daoFindByReimbursementStatus(status);
+  return daoFindReimbursementByStatus(status);
 }
 
-export async function findByReimbursementAuthor(
+export async function findReimbursementByAuthor(
   user_id: number
 ): Promise<Reimbursement[]> {
   return daoFindReimbursementByAuthor(user_id);

@@ -4,9 +4,11 @@ import { authFactory } from "../Middleware/auth.middleware";
 import {
   submitReimbursement,
   findReimbursementByStatus,
-  findByReimbursementAuthor,
-  updateReimbursement
+  updateReimbursement,
+  findReimbursementByAuthor
 } from "../Services/ReimbursementService";
+import { DeniedReimbursement } from "../Errors/DeniedReimbursement";
+import { BadCredentialsError } from "../Errors/BadCredentialsError";
 
 export const reimbursementRouter = express.Router();
 
@@ -36,6 +38,25 @@ reimbursementRouter.post(
         throw new Error(
           "Please provide all details to submit a reimbursement request."
         );
+      }
+    } catch (e) {
+      res.status(e.status).send(e.message);
+    }
+  }
+);
+
+//find reimbursement by author
+reimbursementRouter.get(
+  "/author/userId/:user_id",
+  authFactory(["Finance-Manager"]),
+  async (req, res) => {
+    const { user_id } = req.body;
+    try {
+      if (!isNaN(user_id)) {
+        const reimbursement = await findReimbursementByAuthor(user_id);
+        res.status(200).json(reimbursement);
+      } else {
+        throw new Error("Enter a valid user id.");
       }
     } catch (e) {
       res.status(e.status).send(e.message);

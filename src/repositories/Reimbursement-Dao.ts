@@ -41,7 +41,7 @@ export async function daoSubmitReimbursement(
   }
 }
 
-export async function daoFindByReimbursementStatus(
+export async function daoFindReimbursementByStatus(
   status: number
 ): Promise<Reimbursement[]> {
   let client: PoolClient;
@@ -85,8 +85,10 @@ export async function daoFindReimbursementByAuthor(
     }
   } catch (e) {
     if (e.message === "Denied Reimbursement") {
+      console.log(e);
       throw new DeniedReimbursement();
     } else {
+      console.log(e);
       throw new InternalServerError();
     }
   } finally {
