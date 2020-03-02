@@ -7,8 +7,6 @@ import {
   updateReimbursement,
   findReimbursementByAuthor
 } from "../Services/ReimbursementService";
-import { DeniedReimbursement } from "../Errors/DeniedReimbursement";
-import { BadCredentialsError } from "../Errors/BadCredentialsError";
 
 export const reimbursementRouter = express.Router();
 
