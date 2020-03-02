@@ -1,6 +1,5 @@
 import * as express from "express";
 import { UserDTO } from "../DTOs/UserDTO";
-import { sessionMiddleware } from "../middleware/session-middleware";
 import { authFactory } from "../Middleware/auth.middleware";
 import {
   findAllUsers,
@@ -10,7 +9,6 @@ import {
 } from "../Services/UserService";
 
 export const userRouter = express.Router();
-userRouter.use(sessionMiddleware);
 
 //LOGIN USER
 userRouter.post("/login", async (req, res) => {
