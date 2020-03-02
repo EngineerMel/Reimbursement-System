@@ -2,7 +2,6 @@ import * as express from "express";
 import { UserDTO } from "../DTOs/UserDTO";
 import { sessionMiddleware } from "../middleware/session-middleware";
 import { authFactory } from "../Middleware/auth.middleware";
-
 import {
   findAllUsers,
   findUserById,
@@ -35,11 +34,8 @@ userRouter.post("/login", async (req, res) => {
 userRouter.get("", authFactory(["Finance-Manager"]), async (req, res) => {
   if (req.session.user) {
     try {
-      if (req.session.user.role.role_id > 2) {
-      } else {
-        const users = await findAllUsers();
-        res.status(200).json(users);
-      }
+      const users = await findAllUsers();
+      res.status(200).json(users);
     } catch (e) {
       //end of try
       res.status(e.status).send(e.message);
@@ -58,13 +54,8 @@ userRouter.get("/:id", authFactory(["Finance-Manager"]), async (req, res) => {
       res.status(400).send("Invalid Id.");
     } else {
       try {
-        if (
-          req.session.user.role.role_id <= 2 ||
-          user_id === req.session.user.user_id
-        ) {
-          const user = await findUserById(user_id);
-          res.status(200).json(user);
-        }
+        const user = await findUserById(user_id);
+        res.status(200).json(user);
       } catch (e) {
         res.status(e.status).send(e.message);
       }
@@ -79,32 +70,30 @@ userRouter.get("/:id", authFactory(["Finance-Manager"]), async (req, res) => {
 userRouter.patch("/update", authFactory(["Admin"]), async (req, res) => {
   if (req.session.user) {
     try {
-      if (req.session.user.role.role_id === 1) {
-        const {
-          user_id,
-          username,
-          password,
-          firstName,
-          lastName,
-          email,
-          role
-        } = req.body;
-        if (findUserById(user_id)) {
-          let user = await updateUser(
-            new UserDTO(
-              user_id,
-              username,
-              password,
-              firstName,
-              lastName,
-              email,
-              role
-            )
-          );
-          res.status(200).json(user);
-        } else {
-          res.status(400).send("Invalid Credentials. Please enter valid Id.");
-        }
+      const {
+        user_id,
+        username,
+        password,
+        firstName,
+        lastName,
+        email,
+        role
+      } = req.body;
+      if (findUserById(user_id)) {
+        let user = await updateUser(
+          new UserDTO(
+            user_id,
+            username,
+            password,
+            firstName,
+            lastName,
+            email,
+            role
+          )
+        );
+        res.status(200).json(user);
+      } else {
+        res.status(400).send("Invalid Credentials. Please enter valid Id.");
       }
     } catch (e) {
       res.status(e.status).send(e.message);

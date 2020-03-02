@@ -2,7 +2,12 @@ import * as express from "express";
 import { ReimbursementDTO } from "../DTOs/ReimbursementDTO";
 import { sessionMiddleware } from "../Middleware/session-middleware";
 import { authFactory } from "../Middleware/auth.middleware";
-import { submitReimbursement } from "../Services/ReimbursementService";
+import {
+  submitReimbursement,
+  findReimbursementByStatus,
+  findByReimbursementAuthor,
+  updateReimbursement
+} from "../Services/ReimbursementService";
 
 export const reimbursementRouter = express.Router();
 reimbursementRouter.use(sessionMiddleware);
