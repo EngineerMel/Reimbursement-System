@@ -45,10 +45,10 @@ reimbursementRouter.post(
   }
 );
 
-//find reimbursement by author
+//find reimbursement by user
 reimbursementRouter.get(
   "/author/userId/:user_id",
-  authFactory(["Finance-Manager"]),
+  authFactory(["Finance-Manager", "Admin", "User"]),
   async (req, res) => {
     const { user_id } = req.body;
     try {
@@ -57,6 +57,25 @@ reimbursementRouter.get(
         res.status(200).json(reimbursement);
       } else {
         throw new Error("Enter a valid user id.");
+      }
+    } catch (e) {
+      res.status(e.status).send(e.message);
+    }
+  }
+);
+
+//find reimbursement by status
+reimbursementRouter.get(
+  "/status/:status_id",
+  authFactory(["Finance-Manager"]),
+  async (req, res) => {
+    try {
+      const { status_id } = req.body;
+      if (!isNaN(status_id)) {
+        const reimbursement = await findReimbursementByStatus(status_id);
+        res.status(200).json(reimbursement);
+      } else {
+        res.status(400).send("Please submit a valid Id");
       }
     } catch (e) {
       res.status(e.status).send(e.message);
