@@ -134,7 +134,7 @@ export async function daoUpdateReimbursement(
       ]
     );
     let result = await client.query(
-      `SELECT * FROM project0.reimbursement WHERE reimbursement_id = $1;`,
+      `SELECT * FROM public.reimbursement WHERE reimbursement_id = $1;`,
       [reimbursement.reimbursement_id]
     );
     return reimbursementDTOToReimbursement(result.rows[0]);

@@ -82,3 +82,39 @@ reimbursementRouter.get(
     }
   }
 );
+
+reimbursementRouter.patch("/users", async (req, res) => {
+  const {
+    reimbursement_id,
+    author,
+    amount,
+    dateSubmitted,
+    dateResolved,
+    description,
+    resolver,
+    status,
+    type
+  } = req.body;
+  try {
+    if (!req.body) {
+      throw new Error("Please include all fields.");
+    } else {
+      const reimbursement = await updateReimbursement(
+        new ReimbursementDTO(
+          reimbursement_id,
+          author,
+          amount,
+          dateSubmitted,
+          dateResolved,
+          description,
+          resolver,
+          status,
+          type
+        )
+      );
+      res.status(201).json(reimbursement);
+    }
+  } catch (e) {
+    res.status(e.status).send(e.message);
+  }
+});
