@@ -5,8 +5,10 @@ import {
   submitReimbursement,
   findReimbursementByStatus,
   updateReimbursement,
-  findReimbursementByAuthor
+  findReimbursementByAuthor,
+  findAllReimbursements
 } from "../Services/ReimbursementService";
+import { Reimbursement } from "../Models/Reimbursement";
 
 export const reimbursementRouter = express.Router();
 
@@ -43,12 +45,20 @@ reimbursementRouter.post(
   }
 );
 
+reimbursementRouter.get("/all", [
+  authFactory(["Admin", "Finance-Manager"]),
+  async (req, res) => {
+    let reimbursements: Reimbursement[] = await findAllReimbursements();
+    res.json(reimbursements);
+  }
+]);
+
 //find reimbursement by user
 reimbursementRouter.get(
   "/author/userId/:user_id",
   authFactory(["Finance-Manager", "Admin", "User"]),
   async (req, res) => {
-    const { user_id } = req.body;
+    const user_id = +req.params.user_id;
     try {
       if (!isNaN(user_id)) {
         const reimbursement = await findReimbursementByAuthor(user_id);
@@ -68,7 +78,7 @@ reimbursementRouter.get(
   authFactory(["Finance-Manager"]),
   async (req, res) => {
     try {
-      const { status_id } = req.body;
+      const status_id = +req.params.status_id;
       if (!isNaN(status_id)) {
         const reimbursement = await findReimbursementByStatus(status_id);
         res.status(200).json(reimbursement);

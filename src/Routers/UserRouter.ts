@@ -45,23 +45,27 @@ userRouter.get("", authFactory(["Finance-Manager"]), async (req, res) => {
 
 // FIND A USER BY ID
 
-userRouter.get("/:id", authFactory(["Finance-Manager"]), async (req, res) => {
-  if (req.session.user) {
-    const { user_id } = req.body;
-    if (isNaN(user_id)) {
-      res.status(400).send("Invalid Id.");
-    } else {
-      try {
-        const user = await findUserById(user_id);
-        res.status(200).json(user);
-      } catch (e) {
-        res.status(e.status).send(e.message);
+userRouter.get(
+  "/:user_id",
+  authFactory(["Finance-Manager"]),
+  async (req, res) => {
+    if (req.session.user) {
+      const user_id = +req.params.user_id;
+      if (isNaN(user_id)) {
+        res.status(400).send("Invalid Id.");
+      } else {
+        try {
+          const user = await findUserById(user_id);
+          res.status(200).json(user);
+        } catch (e) {
+          res.status(e.status).send(e.message);
+        }
       }
+    } else {
+      res.status(400).send("Please log in");
     }
-  } else {
-    res.status(400).send("Please log in");
   }
-});
+);
 
 //UPDATE A USER
 

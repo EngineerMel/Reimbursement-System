@@ -149,3 +149,19 @@ export async function daoUpdateReimbursement(
     client && client.release();
   }
 }
+
+export async function daoFindAllReimbursements(): Promise<Reimbursement[]> {
+  let client: PoolClient;
+
+  try {
+    client = await connectionPool.connect();
+    let results = await client.query(
+      'select reimbursement_id , U1.username as author, amount, dateSubmitted, dateResolved, description, U2.username as resolver, reimbursement_status.status, reimbursement_type."type" from public.reimbursement inner join public.reimbursement_status on reimbursement.status = reimbursement_status.status_id inner join public.reimbursement_type on reimbursement."type" = reimbursement_type.type_id inner join public.users U1 on reimbursement.author = U1.user_id inner join public.users U2 on reimbursement.resolver = U2.user_id order by reimbursement.dateSubmitted;'
+    );
+    return results.rows.map(reimbursementDTOToReimbursement);
+  } catch (e) {
+    throw new InternalServerError();
+  } finally {
+    client && client.release();
+  }
+}
